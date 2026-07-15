@@ -23,10 +23,10 @@ jobs:
      name: Install Bats and bats libs
      steps:
        - name: Checkout
-         uses: actions/checkout@v5
+         uses: actions/checkout@v7
        - name: Setup Bats and bats libs
          id: setup-bats
-         uses: step-security/bats-action@4.0.0
+         uses: step-security/bats-action@v4
        - name: My test
          shell: bash
          env:
@@ -59,7 +59,7 @@ For example, if you want to install `bats-support` in the `./test/bats-support` 
       [...]
        - name: Setup Bats and Bats libs
          id: setup-bats
-         uses: step-security/bats-action@4.0.0
+         uses: step-security/bats-action@v4
          with:
            support-path: ${{ github.workspace }}/test/bats-support
       [...]
@@ -73,7 +73,7 @@ The action performs a number of calls against github API URLs to discover bats r
       [...]
        - name: Setup Bats and Bats libs
          id: setup-bats
-         uses: step-security/bats-action@4.0.0
+         uses: step-security/bats-action@v4
          with:
            github-token: ${{ secrets.GITHUB_TOKEN }}
       [...]
@@ -93,7 +93,7 @@ For instance this is an example that will use the github workspace handle (works
       [...]
        - name: Setup Bats and bats libs
          id: setup-bats
-         uses: step-security/bats-action@4.0.0
+         uses: step-security/bats-action@v4
          with:
            support-path: "${{ github.workspace }}/tests/bats-support"
            assert-path: "${{ github.workspace }}/tests/bats-assert"
