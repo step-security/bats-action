@@ -157,7 +157,7 @@ runs:
       shell: bash
     # This action would be much easier if only matrix steps will be supported in a composite action
     - name: "Set cache for Bats"
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       if: inputs.bats-install == 'true'
       id: bats-cache
       with:
@@ -248,7 +248,7 @@ runs:
 
     - name: "Set cache for Bats-support"
       if: inputs.support-install == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: support-cache
       with:
         path: ${{ env.SUPPORT_DESTDIR }}
@@ -301,7 +301,7 @@ runs:
 
     - name: "Set cache for Bats-assert"
       if: inputs.assert-install == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: assert-cache
       with:
         path: ${{ env.ASSERT_DESTDIR }}
@@ -354,7 +354,7 @@ runs:
 
     - name: "Set cache for Bats-detik"
       if: inputs.detik-install == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: detik-cache
       with:
         path: ${{ env.DETIK_DESTDIR }}
@@ -406,7 +406,7 @@ runs:
 
     - name: "Set cache for Bats-file"
       if: inputs.file-install == 'true'
-      uses: actions/cache@v6
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
       id: file-cache
       with:
         path: ${{ env.FILE_DESTDIR }}
