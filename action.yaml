@@ -177,9 +177,12 @@ runs:
       if: inputs.bats-install == 'true' && steps.bats-cache.outputs.cache-hit != 'true'
       id: bats-install
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_BATS_VERSION: ${{ inputs.bats-version }}
       run: |
         # In $HOME to avoid sudo requirements
-        VERSION=${{ inputs.bats-version }}
+        VERSION="${INPUT_BATS_VERSION}"
         DESTDIR="$HOME/.local/share/bats"
         TEMPDIR="/tmp/bats"
         URL="https://api.github.com"
@@ -206,9 +209,6 @@ runs:
         echo "bats-installed=true" >> $GITHUB_OUTPUT
 
         rm -rf ${TEMPDIR} || exit 0
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
-
     - name: Set paths and commands for libraries
       shell: bash
       id: set-paths
@@ -237,11 +237,13 @@ runs:
       if: inputs.support-install == 'true'
       id: calculate-support-destdir
       shell: bash
+      env:
+        INPUT_SUPPORT_PATH: ${{ inputs.support-path }}
       run: |
-        if [ -z "${{ inputs.support-path }}" ] || [ "${{ inputs.support-path }}" == "/usr/lib/bats-support" ]; then
+        if [ -z "${INPUT_SUPPORT_PATH}" ] || [ "${INPUT_SUPPORT_PATH}" == "/usr/lib/bats-support" ]; then
           echo "SUPPORT_DESTDIR=${DEFAULT_BASE_DIR}/bats-support" >> $GITHUB_ENV
         else
-          echo "SUPPORT_DESTDIR=${{ inputs.support-path }}" >> $GITHUB_ENV
+          echo "SUPPORT_DESTDIR=${INPUT_SUPPORT_PATH}" >> $GITHUB_ENV
         fi
 
     - name: "Set cache for Bats-support"
@@ -256,41 +258,45 @@ runs:
       if: inputs.support-install == 'true' && steps.support-cache.outputs.cache-hit != 'true'
       id: support-install
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_SUPPORT_VERSION: ${{ inputs.support-version }}
+        INPUT_SUPPORT_CLEAN: ${{ inputs.support-clean }}
       run: |
-        VERSION=${{ inputs.support-version }}
+        VERSION="${INPUT_SUPPORT_VERSION}"
         url="https://api.github.com/repos/bats-core/bats-support/tarball/v${VERSION}"
         TEMPDIR="${TEMPDIR}/bats-support"
-        DESTDIR=${SUPPORT_DESTDIR}
+        DESTDIR="${SUPPORT_DESTDIR}"
 
         declare -a AUTH_ARGS=()
         if [ "$GITHUB_TOKEN" != "" ]; then
           AUTH_ARGS=( -H "Authorization: token $GITHUB_TOKEN" )
         fi
 
-        mkdir -p ${TEMPDIR}
-        ${CMD} mkdir -p ${DESTDIR}/src/
-        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C ${TEMPDIR} --strip-components 1 && cd ${TEMPDIR}
+        mkdir -p "${TEMPDIR}"
+        ${CMD} mkdir -p "${DESTDIR}/src/"
+        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C "${TEMPDIR}" --strip-components 1 && cd "${TEMPDIR}"
         # Archlinux style, except that we are not in a fakeroot env
-        ${CMD} install -m755 load.bash ${DESTDIR}/load.bash
+        ${CMD} install -m755 load.bash "${DESTDIR}/load.bash"
         for fn in src/*.bash; do
-          ${CMD} install -m755 $fn \
-             ${DESTDIR}/src/$(basename $fn)
+          ${CMD} install -m755 "$fn" \
+             "${DESTDIR}/src/$(basename "$fn")"
         done
         echo "Bats Support v$VERSION installed in $DESTDIR"
         echo "support-installed=true" >> $GITHUB_OUTPUT
-        [[ "${{ inputs.support-clean }}" == "true"  ]] && rm -rf ${TEMPDIR} || exit 0
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        [[ "${INPUT_SUPPORT_CLEAN}" == "true"  ]] && rm -rf "${TEMPDIR}" || exit 0
 
     - name: "Calculate DESTDIR for Bats-assert"
       if: inputs.assert-install == 'true'
       id: calculate-assert-destdir
       shell: bash
+      env:
+        INPUT_ASSERT_PATH: ${{ inputs.assert-path }}
       run: |
-        if [ -z "${{ inputs.assert-path }}" ] || [ "${{ inputs.assert-path }}" == "/usr/lib/bats-assert" ]; then
+        if [ -z "${INPUT_ASSERT_PATH}" ] || [ "${INPUT_ASSERT_PATH}" == "/usr/lib/bats-assert" ]; then
           echo "ASSERT_DESTDIR=${DEFAULT_BASE_DIR}/bats-assert" >> $GITHUB_ENV
         else
-          echo "ASSERT_DESTDIR=${{ inputs.assert-path }}" >> $GITHUB_ENV
+          echo "ASSERT_DESTDIR=${INPUT_ASSERT_PATH}" >> $GITHUB_ENV
         fi
 
     - name: "Set cache for Bats-assert"
@@ -305,41 +311,45 @@ runs:
       if: inputs.assert-install == 'true' && steps.assert-cache.outputs.cache-hit != 'true'
       id: assert-install
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_ASSERT_VERSION: ${{ inputs.assert-version }}
+        INPUT_ASSERT_CLEAN: ${{ inputs.assert-clean }}
       run: |
-        VERSION=${{ inputs.assert-version }}
+        VERSION="${INPUT_ASSERT_VERSION}"
         url="https://api.github.com/repos/bats-core/bats-assert/tarball/v${VERSION}"
         TEMPDIR="${TEMPDIR}/bats-assert"
-        DESTDIR=${ASSERT_DESTDIR}
+        DESTDIR="${ASSERT_DESTDIR}"
 
         declare -a AUTH_ARGS=()
         if [ "$GITHUB_TOKEN" != "" ]; then
           AUTH_ARGS=( -H "Authorization: token $GITHUB_TOKEN" )
         fi
 
-        mkdir -p ${TEMPDIR}
-        ${CMD} mkdir -p ${DESTDIR}/src/
-        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C ${TEMPDIR} --strip-components 1 && cd ${TEMPDIR}
+        mkdir -p "${TEMPDIR}"
+        ${CMD} mkdir -p "${DESTDIR}/src/"
+        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C "${TEMPDIR}" --strip-components 1 && cd "${TEMPDIR}"
         # Archlinux style, except that we are not in a fakeroot env
-        ${CMD} install -m755 load.bash ${DESTDIR}/load.bash
+        ${CMD} install -m755 load.bash "${DESTDIR}/load.bash"
         for fn in src/*.bash; do
-          ${CMD} install -m755 $fn \
-             ${DESTDIR}/src/$(basename $fn)
+          ${CMD} install -m755 "$fn" \
+             "${DESTDIR}/src/$(basename "$fn")"
         done
         echo "Bats Assert v$VERSION installed in $DESTDIR"
         echo "assert-installed=true" >> "$GITHUB_OUTPUT"
-        [[ "${{ inputs.assert-clean }}" == "true"  ]] && rm -rf ${TEMPDIR} || exit 0
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        [[ "${INPUT_ASSERT_CLEAN}" == "true"  ]] && rm -rf "${TEMPDIR}" || exit 0
 
     - name: "Calculate DESTDIR for Bats-detik"
       if: inputs.detik-install == 'true'
       id: calculate-detik-destdir
       shell: bash
+      env:
+        INPUT_DETIK_PATH: ${{ inputs.detik-path }}
       run: |
-        if [ -z "${{ inputs.detik-path }}" ] || [ "${{ inputs.detik-path }}" == "/usr/lib/bats-detik" ]; then
+        if [ -z "${INPUT_DETIK_PATH}" ] || [ "${INPUT_DETIK_PATH}" == "/usr/lib/bats-detik" ]; then
           echo "DETIK_DESTDIR=${DEFAULT_BASE_DIR}/bats-detik" >> $GITHUB_ENV
         else
-          echo "DETIK_DESTDIR=${{ inputs.detik-path }}" >> $GITHUB_ENV
+          echo "DETIK_DESTDIR=${INPUT_DETIK_PATH}" >> $GITHUB_ENV
         fi
 
     - name: "Set cache for Bats-detik"
@@ -354,8 +364,12 @@ runs:
       if: inputs.detik-install == 'true' && steps.detik-cache.outputs.cache-hit != 'true'
       id: detik-install
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_DETIK_VERSION: ${{ inputs.detik-version }}
+        INPUT_DETIK_CLEAN: ${{ inputs.detik-clean }}
       run: |
-        VERSION=${{ inputs.detik-version }}
+        VERSION="${INPUT_DETIK_VERSION}"
         url="https://api.github.com/repos/bats-core/bats-detik/tarball/v${VERSION}"
         TEMPDIR="${TEMPDIR}/bats-detik"
         DESTDIR="${DETIK_DESTDIR}"
@@ -365,29 +379,29 @@ runs:
           AUTH_ARGS=( -H "Authorization: token $GITHUB_TOKEN" )
         fi
 
-        mkdir -p ${TEMPDIR}
-        ${CMD} mkdir -p ${DESTDIR}/src/
-        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C ${TEMPDIR} --strip-components 1 && cd ${TEMPDIR}
+        mkdir -p "${TEMPDIR}"
+        ${CMD} mkdir -p "${DESTDIR}/src/"
+        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C "${TEMPDIR}" --strip-components 1 && cd "${TEMPDIR}"
         # Archlinux style, except that we are not in a fakeroot env so we need to use sudo
         for fn in lib/*.bash; do
-          ${CMD} install -m755 $fn \
-             ${DESTDIR}/$(basename $fn)
+          ${CMD} install -m755 "$fn" \
+             "${DESTDIR}/$(basename "$fn")"
         done
         echo "Bats Detik v$VERSION installed in $DESTDIR"
         echo "detik-installed=true" >> $GITHUB_OUTPUT
-        [[ "${{ inputs.detik-clean }}" == "true"  ]] && rm -rf ${TEMPDIR} || exit 0
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        [[ "${INPUT_DETIK_CLEAN}" == "true"  ]] && rm -rf "${TEMPDIR}" || exit 0
 
     - name: "Calculate DESTDIR for Bats-file"
       if: inputs.file-install == 'true'
       id: calculate-file-destdir
       shell: bash
+      env:
+        INPUT_FILE_PATH: ${{ inputs.file-path }}
       run: |
-        if [ -z "${{ inputs.file-path }}" ] || [ "${{ inputs.file-path }}" == "/usr/lib/bats-file" ]; then
+        if [ -z "${INPUT_FILE_PATH}" ] || [ "${INPUT_FILE_PATH}" == "/usr/lib/bats-file" ]; then
           echo "FILE_DESTDIR=${DEFAULT_BASE_DIR}/bats-file" >> $GITHUB_ENV
         else
-          echo "FILE_DESTDIR=${{ inputs.file-path }}" >> $GITHUB_ENV
+          echo "FILE_DESTDIR=${INPUT_FILE_PATH}" >> $GITHUB_ENV
         fi
 
     - name: "Set cache for Bats-file"
@@ -402,8 +416,12 @@ runs:
       if: inputs.file-install == 'true' && steps.file-cache.outputs.cache-hit != 'true'
       id: file-install
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        INPUT_FILE_VERSION: ${{ inputs.file-version }}
+        INPUT_FILE_CLEAN: ${{ inputs.file-clean }}
       run: |
-        VERSION=${{ inputs.file-version }}
+        VERSION="${INPUT_FILE_VERSION}"
         url="https://api.github.com/repos/bats-core/bats-file/tarball/v${VERSION}"
         TEMPDIR="${TEMPDIR}/bats-file"
         DESTDIR="${FILE_DESTDIR}"
@@ -413,20 +431,18 @@ runs:
           AUTH_ARGS=( -H "Authorization: token $GITHUB_TOKEN" )
         fi
 
-        mkdir -p ${TEMPDIR}
-        ${CMD} mkdir -p ${DESTDIR}/src/
-        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C ${TEMPDIR} --strip-components 1 && cd ${TEMPDIR}
+        mkdir -p "${TEMPDIR}"
+        ${CMD} mkdir -p "${DESTDIR}/src/"
+        curl -sL --retry 4 --retry-connrefused "${AUTH_ARGS[@]}" "${url}" | tar xz -C "${TEMPDIR}" --strip-components 1 && cd "${TEMPDIR}"
         # Archlinux style, except that we are not in a fakeroot env
-        ${CMD} install -m755 load.bash ${DESTDIR}/load.bash
+        ${CMD} install -m755 load.bash "${DESTDIR}/load.bash"
         for fn in src/*.bash; do
-          ${CMD} install -m755 $fn \
-             ${DESTDIR}/src/$(basename $fn)
+          ${CMD} install -m755 "$fn" \
+             "${DESTDIR}/src/$(basename "$fn")"
         done
         echo "Bats File v$VERSION installed in $DESTDIR"
         echo "file-installed=true" >> $GITHUB_OUTPUT
-        [[ "${{ inputs.file-clean }}" == "true"  ]] && rm -rf ${TEMPDIR} || exit 0
-      env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
+        [[ "${INPUT_FILE_CLEAN}" == "true"  ]] && rm -rf "${TEMPDIR}" || exit 0
 
     - name: "build BATS_LIB_PATH"
       id: libpath
