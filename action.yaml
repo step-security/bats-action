@@ -157,11 +157,7 @@ runs:
       shell: bash
     # This action would be much easier if only matrix steps will be supported in a composite action
     - name: "Set cache for Bats"
-<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-=======
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
->>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       if: inputs.bats-install == 'true'
       id: bats-cache
       with:
@@ -257,11 +253,7 @@ runs:
 
     - name: "Set cache for Bats-support"
       if: inputs.support-install == 'true'
-<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-=======
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
->>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: support-cache
       with:
         path: ${{ env.SUPPORT_DESTDIR }}
@@ -314,11 +306,7 @@ runs:
 
     - name: "Set cache for Bats-assert"
       if: inputs.assert-install == 'true'
-<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-=======
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
->>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: assert-cache
       with:
         path: ${{ env.ASSERT_DESTDIR }}
@@ -371,11 +359,7 @@ runs:
 
     - name: "Set cache for Bats-detik"
       if: inputs.detik-install == 'true'
-<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-=======
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
->>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: detik-cache
       with:
         path: ${{ env.DETIK_DESTDIR }}
@@ -427,11 +411,7 @@ runs:
 
     - name: "Set cache for Bats-file"
       if: inputs.file-install == 'true'
-<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-=======
-      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
->>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: file-cache
       with:
         path: ${{ env.FILE_DESTDIR }}
