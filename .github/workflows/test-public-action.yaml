@@ -35,6 +35,7 @@ jobs:
           assert-clean: "false"
           detik-clean: "false"
           file-clean: "false"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Execute test to check Bats-support
         shell: bash
         env:
@@ -108,6 +109,7 @@ jobs:
           assert-clean: "false"
           detik-clean: "false"
           file-clean: "false"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Execute example tests
         env:
           BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
@@ -145,6 +147,7 @@ jobs:
           assert-clean: "false"
           detik-clean: "false"
           file-clean: "false"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Execute example tests
         env:
           BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
