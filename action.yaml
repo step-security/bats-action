@@ -38,7 +38,7 @@ inputs:
   assert-version:
     description: "Bats-assert version, default to latest"
     required: false
-    default: "2.1.0"
+    default: "2.2.4"
   assert-path:
     description: "Bats-assert path, default to /usr/lib/bats-assert"
     required: false
@@ -157,7 +157,11 @@ runs:
       shell: bash
     # This action would be much easier if only matrix steps will be supported in a composite action
     - name: "Set cache for Bats"
+<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+=======
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+>>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       if: inputs.bats-install == 'true'
       id: bats-cache
       with:
@@ -190,7 +194,7 @@ runs:
         declare -a AUTH_ARGS=()
         if [ "$GITHUB_TOKEN" != "" ]; then
           AUTH_ARGS=( -H "Authorization: token $GITHUB_TOKEN" )
-        fi 
+        fi
 
         # From https://github.com/fluxcd/flux2/blob/44d69d6fc0c353e79c1bad021a4aca135033bce8/action/action.yml#L35
         if [[ -z "$VERSION" ]] || [[ "$VERSION" = "latest" ]]; then
@@ -227,6 +231,11 @@ runs:
           TEMPDIR="/tmp"
         fi
 
+        # If we are already root, there is no need for sudo
+        if (( UID == 0 )) && [[ "$CMD" == sudo ]]; then
+          CMD=""
+        fi
+
         echo "_LIB_PATH=$DEFAULT_BASE_DIR" >> /tmp/bats-lib-path
         echo "DEFAULT_BASE_DIR=$DEFAULT_BASE_DIR" >> $GITHUB_ENV
         echo "CMD=$CMD" >> $GITHUB_ENV
@@ -248,7 +257,11 @@ runs:
 
     - name: "Set cache for Bats-support"
       if: inputs.support-install == 'true'
+<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+=======
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+>>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: support-cache
       with:
         path: ${{ env.SUPPORT_DESTDIR }}
@@ -301,7 +314,11 @@ runs:
 
     - name: "Set cache for Bats-assert"
       if: inputs.assert-install == 'true'
+<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+=======
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+>>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: assert-cache
       with:
         path: ${{ env.ASSERT_DESTDIR }}
@@ -354,7 +371,11 @@ runs:
 
     - name: "Set cache for Bats-detik"
       if: inputs.detik-install == 'true'
+<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+=======
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+>>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: detik-cache
       with:
         path: ${{ env.DETIK_DESTDIR }}
@@ -406,7 +427,11 @@ runs:
 
     - name: "Set cache for Bats-file"
       if: inputs.file-install == 'true'
+<<<<<<< ab7fc386f73a77d9cc242e3fa983a111a919b604
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+=======
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v4
+>>>>>>> b97d592436eff73bbd89a3647437fe0a12f6e1ee
       id: file-cache
       with:
         path: ${{ env.FILE_DESTDIR }}
