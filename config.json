@@ -1,0 +1,12 @@
+{
+  "$comment": "Managed automatically when syncing with upstream. Do not edit by hand.",
+  "schema_version": 1,
+  "onboarding_type": "copied",
+  "action_type": "composite",
+  "upstream": {
+    "repository": "bats-core/bats-action",
+    "synced_tag": "4.1.0",
+    "synced_commit": "3566550e0f594451ac0f58fcbfdeca93aa29a45e",
+    "archived": false
+  }
+}

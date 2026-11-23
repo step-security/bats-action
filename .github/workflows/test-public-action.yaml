@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         version: ["1.7.0", "1.9.0", "1.11.0", "latest"]
-        os: [ ubuntu-22.04, ubuntu-latest, windows-2022, windows-latest, macos-14, macos-latest ]
+        os: [ ubuntu-22.04, ubuntu-24.04, ubuntu-latest, windows-2022, windows-2025, macos-15, macos-26 ]
     runs-on: ${{ matrix.os }}
     env:
       BATS_LIB_PATH: "/usr/lib"
@@ -30,10 +30,12 @@ jobs:
         uses: ./
         with:
           bats-version: ${{ matrix.version }}
+          assert-version: "2.2.4"
           support-clean: "false"
           assert-clean: "false"
           detik-clean: "false"
           file-clean: "false"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Execute test to check Bats-support
         shell: bash
         env:
@@ -107,6 +109,7 @@ jobs:
           assert-clean: "false"
           detik-clean: "false"
           file-clean: "false"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Execute example tests
         env:
           BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
@@ -121,7 +124,7 @@ jobs:
       fail-fast: false
       matrix:
         version: ["1.7.0", "1.9.0", "1.11.0", "latest"]
-        os: [ ubuntu-22.04, ubuntu-latest, windows-2022, windows-latest, macos-14, macos-latest ]
+        os: [ ubuntu-22.04, ubuntu-24.04, ubuntu-latest, windows-2022, windows-2025, macos-15, macos-26 ]
     runs-on: ${{ matrix.os }}
     env:
       TERM: xterm
@@ -139,10 +142,12 @@ jobs:
         id: setup-bats
         with:
           bats-version: ${{ matrix.version }}
+          assert-version: "2.2.4"
           support-clean: "false"
           assert-clean: "false"
           detik-clean: "false"
           file-clean: "false"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Execute example tests
         env:
           BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
